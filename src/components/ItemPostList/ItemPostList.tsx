@@ -10,6 +10,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import RateReviewIcon from "@mui/icons-material/RateReview";
 
 interface Column {
   id: "title" | "category" | "price" | "email" | "mobileNumber" | "action";
@@ -61,7 +62,7 @@ const ItemPostList: React.FC = () => {
         return (
           <>
             <Button onClick={() => onEditRow(id)}>
-              <EditNotifications
+              <RateReviewIcon
                 color="primary"
                 style={{
                   fontSize: 28,
