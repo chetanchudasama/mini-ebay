@@ -1,0 +1,23 @@
+.sell-item-container {
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  background: #fff;
+  border: 1px solid rgba(0, 47, 52, 0.2);
+  border-radius: 4px;
+  padding: 20px;
+  margin-bottom: 10px;
+}
+.form-container {
+  margin-top: 5px;
+}
+.form-label-text {
+  font-size: 15px;
+}
+.divider-container {
+  margin-top: 20px;
+}
+.post-button {
+  text-align: center;
+  padding-top: 20px;
+}
