@@ -19,9 +19,12 @@ import {
 } from "../../commons/data/ListsData";
 import "./SellItem.css";
 import "../Home/Home.css";
+import FileUpload from "../FileUpload/FileUpload";
+import FileModel from "../../models/FileModel";
+import Item from "../../models/Item";
 
 const SellItem: React.FC = () => {
-  const [itemPost, setItemPost] = useState({});
+  const [itemPost, setItemPost] = useState<Item>(new Item());
 
   const onChange = (e: any) => {
     const { value, id } = e.target;
@@ -47,6 +50,7 @@ const SellItem: React.FC = () => {
               </InputLabel>
               <Select
                 label="Choose a Category"
+                value={itemPost.category}
                 onChange={(event: any) => {
                   handleSelectChange("category", event.target.value);
                 }}
@@ -67,6 +71,7 @@ const SellItem: React.FC = () => {
               id="title"
               variant="outlined"
               margin="dense"
+              value={itemPost.title}
               onChange={(e) => onChange(e)}
               fullWidth
             />
@@ -79,6 +84,7 @@ const SellItem: React.FC = () => {
               multiline
               rows={4}
               fullWidth
+              value={itemPost.description}
               onChange={(e) => onChange(e)}
             />
           </Grid>
@@ -95,6 +101,7 @@ const SellItem: React.FC = () => {
             <label className="form-label-text">Price</label>
             <TextField
               id="price"
+              value={itemPost.price}
               variant="outlined"
               margin="dense"
               onChange={(e) => onChange(e)}
@@ -111,7 +118,7 @@ const SellItem: React.FC = () => {
           </Grid>
 
           <Grid item xs={8}>
-            &nbsp;
+            <FileUpload onChangeFile={() => {}} file={new FileModel()} />
           </Grid>
         </Grid>
 
@@ -127,6 +134,7 @@ const SellItem: React.FC = () => {
               <InputLabel>Country List</InputLabel>
               <Select
                 label="Country List"
+                value={itemPost.country}
                 onChange={(event: any) => {
                   handleSelectChange("country", event.target.value);
                 }}
@@ -146,12 +154,13 @@ const SellItem: React.FC = () => {
               <InputLabel>State</InputLabel>
               <Select
                 label="Category"
+                value={itemPost.state}
                 onChange={(event: any) => {
                   handleSelectChange("state", event.target.value);
                 }}
               >
                 {StateList.length > 0 &&
-                  CountryList.map((state) => (
+                  StateList.map((state) => (
                     <MenuItem key={state.id} value={state.text}>
                       {state.text}
                     </MenuItem>
@@ -171,6 +180,7 @@ const SellItem: React.FC = () => {
           <Grid item xs={8}>
             <label className="form-label-text">Your Name</label>
             <TextField
+              value={itemPost.name}
               id="name"
               variant="outlined"
               margin="dense"
@@ -183,6 +193,7 @@ const SellItem: React.FC = () => {
             <label className="form-label-text">Mobile Number</label>
             <TextField
               id="mobileNumber"
+              value={itemPost.mobileNumber}
               variant="outlined"
               margin="dense"
               onChange={(e) => onChange(e)}
@@ -196,6 +207,7 @@ const SellItem: React.FC = () => {
               id="email"
               variant="outlined"
               margin="dense"
+              value={itemPost.email}
               onChange={(e) => onChange(e)}
               fullWidth
             />
@@ -207,6 +219,7 @@ const SellItem: React.FC = () => {
                 <Checkbox
                   id="isVisiblePublicly"
                   color="success"
+                  checked={itemPost.isVisiblePublicly}
                   onChange={(event) =>
                     setItemPost({
                       ...itemPost,
