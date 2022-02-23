@@ -7,7 +7,6 @@ import { Carousel } from "react-responsive-carousel";
 const Post: React.FC = () => {
   return (
     <>
-      <h1> Post View</h1>
       <Container maxWidth="lg" className="post-container">
         <Grid container spacing={2}>
           <Grid item xs={8}>
