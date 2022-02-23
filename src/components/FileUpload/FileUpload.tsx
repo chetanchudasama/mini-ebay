@@ -50,6 +50,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onChangeFile, file }) => {
               <>
                 <img
                   src={url}
+                  alt="test"
                   style={{
                     width: "100px",
                     height: "100px",
