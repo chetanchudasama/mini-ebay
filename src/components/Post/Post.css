@@ -1,0 +1,31 @@
+.post-container {
+  border: 1px solid rgba(0, 47, 52, 0.2);
+  box-sizing: border-box;
+  background: #fff;
+  border-radius: 4px;
+  padding: 20px;
+  margin-top: 20px;
+}
+.item-carousel {
+  display: flex;
+  justify-content: center;
+  background: transparent;
+}
+.price-container {
+  padding-left: 2px;
+}
+.price-detail {
+  border: 1px solid rgba(0, 47, 52, 0.2);
+  padding: 10px;
+  margin: 10px 0 20px 10px;
+}
+.item-detail {
+  border: 1px solid rgba(0, 47, 52, 0.2);
+  margin: 10px 0 10px;
+  padding: 10px;
+}
+.item-category {
+  width: 200px;
+  display: flex;
+  justify-content: space-between;
+}
