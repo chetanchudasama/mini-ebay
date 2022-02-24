@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Container, Grid } from "@mui/material";
+import { Button, Container, Grid, TextField } from "@mui/material";
 import "./PostDetail.css";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import PostDetailModel from "../../models/PostDetailModel";
 import { useParams } from "react-router-dom";
 import { GetPostDetail } from "../../api/PostController";
+import { AddNewComments } from "../../api/CommentController";
 
 interface PostProps {
   item: PostDetailModel;
@@ -13,20 +14,32 @@ interface PostProps {
 const Post: React.FC<PostProps> = ({ item }) => {
   const { id } = useParams<{ id: string }>();
   const [postDetail, setPostDetail] = useState<any>(null);
+  const [comment, setComment] = useState<string>("");
 
   useEffect(() => {
     GetPostDetail(id)
       .then((res: any) => {
         if (res.data.result.data) {
-          setPostDetail(res.data.result.data);
+          let postDetailTemp = { ...postDetail };
+          postDetailTemp = res.data.result.data;
+          postDetailTemp.fileSrc = res.data.result.data.images;
+          setPostDetail(postDetailTemp);
         }
       })
       .catch((error) => {
         console.log(error);
       });
-  }, [id]);
+  }, []);
 
-  console.log(postDetail);
+  const handleCommentSubmit = () => {
+    AddNewComments(comment)
+      .then((res: any) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return (
     <>
@@ -35,7 +48,7 @@ const Post: React.FC<PostProps> = ({ item }) => {
           <Grid container spacing={2}>
             <Grid item xs={8}>
               <div className="item-carousel">
-                <img src={postDetail.imageURL} alt="" />
+                <img src={postDetail.fileSrc} alt="" width="300" height="300" />
               </div>
             </Grid>
             <Grid item xs={4} className="price-container">
@@ -61,6 +74,23 @@ const Post: React.FC<PostProps> = ({ item }) => {
                 <h3> Description</h3>
                 <p> {postDetail.description} </p>
                 <h3> Comments </h3>
+                <TextField
+                  id="description"
+                  value={comment}
+                  multiline
+                  rows={4}
+                  fullWidth
+                  onChange={(event) => setComment(event.target.value)}
+                />
+                <div className="comment-submit-button">
+                  <Button
+                    variant="contained"
+                    size="large"
+                    onClick={handleCommentSubmit}
+                  >
+                    Add Comment
+                  </Button>
+                </div>
               </div>
             </Grid>
           </Grid>

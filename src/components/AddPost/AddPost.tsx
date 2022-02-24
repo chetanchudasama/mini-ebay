@@ -232,8 +232,8 @@ const SellItem: React.FC = () => {
               >
                 {stateList.length > 0 &&
                   stateList.map((state: any) => (
-                    <MenuItem key={state.id} value={state.text}>
-                      {state.text}
+                    <MenuItem key={state._id} value={state._id}>
+                      {state.name}
                     </MenuItem>
                   ))}
               </Select>

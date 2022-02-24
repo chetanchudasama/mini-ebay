@@ -12,7 +12,7 @@ export const GetCountries = () => {
 
 export const GetState = (countryId: any) => {
   // TODO update url
-  return axiosPlugin.get(`country/state/list/${countryId}`);
+  return axiosPlugin.get(`country/state/list?country=${countryId}`);
 };
 
 export const GetPostList = () => {
