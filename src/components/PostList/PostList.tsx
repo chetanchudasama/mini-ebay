@@ -13,9 +13,11 @@ import RateReviewIcon from "@mui/icons-material/RateReview";
 import { GetCategories, GetPostList } from "../../api/PostController";
 import { useHistory } from "react-router-dom";
 import Spinner from "../Spinner/Spinner";
+import PostDetailModel from "../../models/PostDetailModel";
+import { ICategory, IResponseObject } from "../../commons/interface";
 
 interface Column {
-  id: "title" | "category" | "price" | "email" | "mobile" | "action";
+  id: "title" | "category" | "price" | "email" | "mobileNumber" | "action";
   label: string;
   minWidth?: number;
   align?: "right" | "center" | "left";
@@ -24,8 +26,8 @@ interface Column {
 }
 
 const ItemPostList: React.FC = () => {
-  const [postList, setPostList] = useState<any>([]);
-  const [categoriesList, setCategoriesList] = useState<any>([]);
+  const [postList, setPostList] = useState<PostDetailModel[]>([]);
+  const [categoriesList, setCategoriesList] = useState<ICategory[]>([]);
   const history = useHistory();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -63,7 +65,7 @@ const ItemPostList: React.FC = () => {
       align: "center",
     },
     {
-      id: "mobile",
+      id: "mobileNumber",
       label: "Mobile Number",
       minWidth: 150,
       align: "center",
@@ -97,7 +99,7 @@ const ItemPostList: React.FC = () => {
   useEffect(() => {
     setIsLoading(false);
     GetCategories()
-      .then((res: any) => {
+      .then((res: IResponseObject) => {
         if (res.data.result.data) {
           setCategoriesList(res.data.result.data);
           setIsLoading(false);
@@ -110,11 +112,14 @@ const ItemPostList: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    setIsLoading(false);
+    setIsLoading(true);
     GetPostList()
-      .then((res: any) => {
+      .then((res: IResponseObject) => {
         if (res.data.result.data) {
-          setPostList(res.data.result.data);
+          const postList = res.data.result.data.filter(
+            (post: PostDetailModel) => post.isPublic
+          );
+          setPostList(postList);
           setIsLoading(false);
         }
       })
@@ -147,7 +152,7 @@ const ItemPostList: React.FC = () => {
             <TableBody>
               {postList.map((row: any) => {
                 return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                  <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
                     {categoriesList.length > 0 &&
                       columns.map((column) => {
                         const value = row[column.id];
