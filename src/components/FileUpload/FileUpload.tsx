@@ -1,26 +1,25 @@
 import React from "react";
-import { useState } from "react";
 import { Button } from "@mui/material";
 import FileModel from "../../models/FileModel";
 import "./FileUpload.css";
 
 interface FileUploadProps {
-  onChangeFile?: (fileObject: FileModel) => void;
-  file: FileModel;
+  onFileChange?: (fileObject: FileModel) => void;
+  imageFile: FileModel;
 }
 
-const FileUpload: React.FC<FileUploadProps> = ({ onChangeFile, file }) => {
+const FileUpload: React.FC<FileUploadProps> = ({ onFileChange, imageFile }) => {
   const mimeType: string[] = ["image/png", "image/jpeg"];
-  const [fileObject, setFileObject] = useState<any>([]);
 
-  const handleFile = (event: any) => {
-    const selectedFIles: string[] = [];
-    const targetFiles = event.target.files;
-    const targetFilesObject = [...targetFiles];
-    targetFilesObject.map((file) => {
-      return selectedFIles.push(URL.createObjectURL(file));
-    });
-    setFileObject(selectedFIles);
+  const handleFileChange = (event: any) => {
+    let file = event.target.files[0];
+    const srcUrl = URL.createObjectURL(file);
+    onFileChange &&
+      onFileChange({
+        fileName: file.name,
+        file: file!,
+        fileSrc: srcUrl,
+      });
   };
 
   return (
@@ -32,34 +31,24 @@ const FileUpload: React.FC<FileUploadProps> = ({ onChangeFile, file }) => {
           size="small"
           component="label"
         >
-          Upload
+          Upload Image
           <input
             type="file"
             hidden
             accept={mimeType.join(",")}
-            onChange={handleFile}
+            onChange={handleFileChange}
             multiple
           />
         </Button>
         <p>Only JPEG and PNG support</p>
         <br />
-        {fileObject &&
-          fileObject.length > 0 &&
-          fileObject.map((url: any) => {
-            return (
-              <>
-                <img
-                  src={url}
-                  alt="test"
-                  style={{
-                    width: "100px",
-                    height: "100px",
-                    paddingRight: "20px",
-                  }}
-                />
-              </>
-            );
-          })}
+        {imageFile.fileSrc && (
+          <img
+            src={imageFile.fileSrc}
+            alt={imageFile.fileName}
+            className="image-preview"
+          />
+        )}
       </div>
     </>
   );

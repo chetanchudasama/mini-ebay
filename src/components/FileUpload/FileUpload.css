@@ -1,4 +1,8 @@
 .file-upload-container {
   margin-top: 17px;
-  float: right;
+}
+.image-preview {
+  width: 200px;
+  height: 200px;
+  padding-right: 20px;
 }

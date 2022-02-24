@@ -1,11 +1,11 @@
 import "./App.css";
 import MenuBar from "./components/MenuBar/MenuBar";
-import SellItem from "./components/SellItem/SellItem";
+import SellItem from "./components/AddPost/AddPost";
 import { Switch, Route } from "react-router-dom";
-import ItemPostList from "./components/ItemPostList/ItemPostList";
-import Post from "./components/Post/Post";
+import ItemPostList from "./components/PostList/PostList";
+import Post from "./components/PostDetail/PostDetail";
 
-function App() {
+const App = () => {
   return (
     <div>
       <MenuBar />
@@ -18,6 +18,6 @@ function App() {
       </div>
     </div>
   );
-}
+};
 
 export default App;
