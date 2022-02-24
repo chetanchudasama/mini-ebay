@@ -57,6 +57,7 @@ const Post: React.FC = () => {
       .then((res: IResponseObject) => {
         if (res.data.result.data) {
           setIsShownSnackbar(true);
+          setIsCommentText(true);
           setResponseMessage("Comment Added successfully");
         }
       })

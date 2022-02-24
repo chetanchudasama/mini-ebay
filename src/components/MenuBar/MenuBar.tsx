@@ -44,7 +44,7 @@ const MenuBar: React.FC = () => {
             component="div"
             sx={{ mr: 2, display: { xs: "none", md: "flex" } }}
           >
-            Min-Ebay
+            Mini-Ebay
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
