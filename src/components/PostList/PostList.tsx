@@ -15,6 +15,8 @@ import { useHistory } from "react-router-dom";
 import Spinner from "../Spinner/Spinner";
 import PostDetailModel from "../../models/PostDetailModel";
 import { ICategory, IResponseObject } from "../../commons/interface";
+import { getCategoryName } from "../../commons/Shared";
+import CustomSnackbar from "../CustomSnackbar/CustomSnackbar";
 
 interface Column {
   id: "title" | "category" | "price" | "email" | "mobileNumber" | "action";
@@ -30,12 +32,8 @@ const ItemPostList: React.FC = () => {
   const [categoriesList, setCategoriesList] = useState<ICategory[]>([]);
   const history = useHistory();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const getCategoryName = (id: string) => {
-    return categoriesList.length > 0
-      ? categoriesList.find((x: any) => x._id === id)?.item
-      : "";
-  };
+  const [isShownSnackbar, setIsShownSnackbar] = useState<boolean>(false);
+  const [responseMessage, setResponseMessage] = useState<string>("");
 
   const columns: Column[] = [
     {
@@ -49,7 +47,7 @@ const ItemPostList: React.FC = () => {
       minWidth: 100,
       align: "center",
       category: (id: string) => {
-        return <p>{getCategoryName(id)}</p>;
+        return <p>{getCategoryName(categoriesList, id)}</p>;
       },
     },
     {
@@ -106,7 +104,7 @@ const ItemPostList: React.FC = () => {
         }
       })
       .catch((error) => {
-        console.log(error);
+        handleErrorMsg();
         setIsLoading(false);
       });
   }, []);
@@ -125,9 +123,14 @@ const ItemPostList: React.FC = () => {
       })
       .catch((error) => {
         setIsLoading(false);
-        console.log(error);
+        handleErrorMsg();
       });
   }, []);
+
+  const handleErrorMsg = () => {
+    setIsShownSnackbar(true);
+    setResponseMessage("Something went to wrong");
+  };
 
   return (
     <>
@@ -173,6 +176,12 @@ const ItemPostList: React.FC = () => {
           </Table>
         </TableContainer>
         {isLoading && <Spinner />}
+        {isShownSnackbar && (
+          <CustomSnackbar
+            message={responseMessage}
+            handleClose={setIsShownSnackbar}
+          />
+        )}
       </Paper>
     </>
   );

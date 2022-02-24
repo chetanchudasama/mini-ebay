@@ -3,9 +3,11 @@ import { Button, Container, Grid, TextField } from "@mui/material";
 import "./PostDetail.css";
 import PostDetailModel from "../../models/PostDetailModel";
 import { useParams } from "react-router-dom";
-import { GetPostDetail } from "../../api/PostController";
+import { GetCategories, GetPostDetail } from "../../api/PostController";
 import { AddNewComments, GetComment } from "../../api/CommentController";
-import { IResponseObject } from "../../commons/interface";
+import { ICategory, IResponseObject } from "../../commons/interface";
+import { getCategoryName } from "../../commons/Shared";
+import CustomSnackbar from "../CustomSnackbar/CustomSnackbar";
 
 const Post: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -14,6 +16,9 @@ const Post: React.FC = () => {
   );
   const [comment, setComment] = useState<string>("");
   const [isCommentText, setIsCommentText] = useState<boolean>(false);
+  const [categoriesList, setCategoriesList] = useState<ICategory[]>([]);
+  const [isShownSnackbar, setIsShownSnackbar] = useState<boolean>(false);
+  const [responseMessage, setResponseMessage] = useState<string>("");
 
   useEffect(() => {
     GetPostDetail(id)
@@ -23,7 +28,7 @@ const Post: React.FC = () => {
         }
       })
       .catch((error) => {
-        console.log(error);
+        handleErrorMsg();
       });
     GetComment(id)
       .then((res: IResponseObject) => {
@@ -32,19 +37,37 @@ const Post: React.FC = () => {
           setIsCommentText(true);
         }
       })
-      .catch((error) => {});
+      .catch((error) => {
+        handleErrorMsg();
+      });
+    GetCategories()
+      .then((res: IResponseObject) => {
+        if (res.data.result.data) {
+          setCategoriesList(res.data.result.data);
+        }
+      })
+      .catch((error) => {
+        handleErrorMsg();
+      });
+    // eslint-disable-next-line
   }, []);
 
   const handleCommentSubmit = () => {
     AddNewComments({ postId: id, comment })
-      .then((res: any) => {
+      .then((res: IResponseObject) => {
         if (res.data.result.data) {
-          setIsCommentText(true);
+          setIsShownSnackbar(true);
+          setResponseMessage("Comment Added successfully");
         }
       })
       .catch((error) => {
-        console.log(error);
+        handleErrorMsg();
       });
+  };
+
+  const handleErrorMsg = () => {
+    setIsShownSnackbar(true);
+    setResponseMessage("Something went to wrong");
   };
 
   return (
@@ -80,7 +103,7 @@ const Post: React.FC = () => {
                 <h3> Detail</h3>
                 <div className="item-category">
                   <p>Category</p>
-                  <p>Mobile</p>
+                  <p>{getCategoryName(categoriesList, postDetail.category)}</p>
                 </div>
                 <h3> Description</h3>
                 <p> {postDetail.description} </p>
@@ -111,6 +134,12 @@ const Post: React.FC = () => {
               </div>
             </Grid>
           </Grid>
+          {isShownSnackbar && (
+            <CustomSnackbar
+              message={responseMessage}
+              handleClose={setIsShownSnackbar}
+            />
+          )}
         </Container>
       )}
     </>

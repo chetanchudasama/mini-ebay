@@ -55,7 +55,7 @@ const SellItem: React.FC = () => {
         }
       })
       .catch((error) => {
-        console.log(error);
+        handleErrorMsg();
       });
     GetCategories()
       .then((res: IResponseObject) => {
@@ -64,7 +64,7 @@ const SellItem: React.FC = () => {
         }
       })
       .catch((error) => {
-        console.log(error);
+        handleErrorMsg();
       });
   }, []);
 
@@ -77,7 +77,7 @@ const SellItem: React.FC = () => {
           }
         })
         .catch((error) => {
-          console.log(error);
+          handleErrorMsg();
         });
     }
   }, [itemPost.country]);
@@ -99,13 +99,19 @@ const SellItem: React.FC = () => {
         if (res.data.result.data) {
           setIsShownSnackbar(true);
           setResponseMessage("Record Added successfully");
-          history.push("/");
+          setTimeout(() => {
+            history.push("/");
+          }, 500);
         }
       })
       .catch((error) => {
-        setIsShownSnackbar(true);
-        setResponseMessage("Something went to wrong");
+        handleErrorMsg();
       });
+  };
+
+  const handleErrorMsg = () => {
+    setIsShownSnackbar(true);
+    setResponseMessage("Something went to wrong");
   };
 
   return (
@@ -207,7 +213,7 @@ const SellItem: React.FC = () => {
               <InputLabel>Country List</InputLabel>
               <Select
                 label="Country List"
-                value={itemPost.country}
+                value={itemPost.country ?? ""}
                 onChange={(event: any) => {
                   handleSelectChange("country", event.target.value);
                 }}
@@ -226,8 +232,8 @@ const SellItem: React.FC = () => {
             <FormControl fullWidth>
               <InputLabel>State</InputLabel>
               <Select
-                label="Category"
-                value={itemPost.state}
+                label="State"
+                value={itemPost.state ?? ""}
                 onChange={(event: any) => {
                   handleSelectChange("state", event.target.value);
                 }}
