@@ -22,6 +22,7 @@ import {
   GetCountries,
   GetState,
 } from "../../api/PostController";
+import CustomSnackbar from "../CustomSnackbar/CustomSnackbar";
 
 const SellItem: React.FC = () => {
   const [itemPost, setItemPost] = useState<PostDetailModel>(
@@ -30,6 +31,9 @@ const SellItem: React.FC = () => {
   const [countriesList, setCountriesList] = useState<any>([]);
   const [categoriesList, setCategoriesList] = useState<any>([]);
   const [stateList, setStateList] = useState<any>([]);
+
+  const [isShownSnackbar, setIsShownSnackbar] = useState<boolean>(false);
+  const [responseMessage, setResponseMessage] = useState<string>("");
 
   const onChange = (e: any) => {
     const { value, id } = e.target;
@@ -89,10 +93,12 @@ const SellItem: React.FC = () => {
     });
     AddNewPost(formData)
       .then((res: any) => {
-        console.log(res);
+        setIsShownSnackbar(true);
+        setResponseMessage("Post record created successfully ");
       })
       .catch((error) => {
-        console.log(error);
+        setIsShownSnackbar(true);
+        setResponseMessage("Something went to wrong");
       });
   };
 
@@ -311,6 +317,12 @@ const SellItem: React.FC = () => {
             POST
           </Button>
         </Grid>
+        {isShownSnackbar && (
+          <CustomSnackbar
+            message={responseMessage}
+            handleClose={setIsShownSnackbar}
+          />
+        )}
       </Container>
     </>
   );
