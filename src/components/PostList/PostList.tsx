@@ -12,6 +12,7 @@ import {
 import RateReviewIcon from "@mui/icons-material/RateReview";
 import { GetCategories, GetPostList } from "../../api/PostController";
 import { useHistory } from "react-router-dom";
+import Spinner from "../Spinner/Spinner";
 
 interface Column {
   id: "title" | "category" | "price" | "email" | "mobile" | "action";
@@ -26,6 +27,7 @@ const ItemPostList: React.FC = () => {
   const [postList, setPostList] = useState<any>([]);
   const [categoriesList, setCategoriesList] = useState<any>([]);
   const history = useHistory();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const getCategoryName = (id: string) => {
     return categoriesList.length > 0
@@ -93,25 +95,31 @@ const ItemPostList: React.FC = () => {
   ];
 
   useEffect(() => {
+    setIsLoading(false);
     GetCategories()
       .then((res: any) => {
         if (res.data.result.data) {
           setCategoriesList(res.data.result.data);
+          setIsLoading(false);
         }
       })
       .catch((error) => {
         console.log(error);
+        setIsLoading(false);
       });
   }, []);
 
   useEffect(() => {
+    setIsLoading(false);
     GetPostList()
       .then((res: any) => {
         if (res.data.result.data) {
           setPostList(res.data.result.data);
+          setIsLoading(false);
         }
       })
       .catch((error) => {
+        setIsLoading(false);
         console.log(error);
       });
   }, []);
@@ -159,6 +167,7 @@ const ItemPostList: React.FC = () => {
             </TableBody>
           </Table>
         </TableContainer>
+        {isLoading && <Spinner />}
       </Paper>
     </>
   );
