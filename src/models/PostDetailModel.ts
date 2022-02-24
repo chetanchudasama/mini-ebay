@@ -1,5 +1,6 @@
-export default class Item {
-  public id: string;
+import FileModel from "./FileModel";
+
+export default class PostDetailModel {
   public title: string;
   public category: string;
   public mobileNumber: string;
@@ -11,9 +12,9 @@ export default class Item {
   public country: string;
   public state: string;
   public isVisiblePublicly: boolean;
+  public image: FileModel;
 
   public constructor() {
-    this.id = "";
     this.title = "";
     this.category = "";
     this.mobileNumber = "";
@@ -24,5 +25,6 @@ export default class Item {
     this.country = "";
     this.state = "";
     this.isVisiblePublicly = false;
+    this.image = new FileModel();
   }
 }
