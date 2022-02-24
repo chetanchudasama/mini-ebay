@@ -1,5 +1,4 @@
-import React from "react";
-import { EditNotifications } from "@mui/icons-material";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Paper,
@@ -11,17 +10,29 @@ import {
   TableRow,
 } from "@mui/material";
 import RateReviewIcon from "@mui/icons-material/RateReview";
+import Item from "../../models/Item";
+import { GetCategories, GetPostList } from "../../api/PostController";
+import { useHistory } from "react-router-dom";
 
 interface Column {
-  id: "title" | "category" | "price" | "email" | "mobileNumber" | "action";
+  id: "title" | "category" | "price" | "email" | "mobile" | "action";
   label: string;
   minWidth?: number;
   align?: "right" | "center" | "left";
+  category?: any;
   action?: any;
 }
 
 const ItemPostList: React.FC = () => {
-  const onEditRow = (id: string) => {};
+  const [postList, setPostList] = useState<any>([]);
+  const [categoriesList, setCategoriesList] = useState<any>([]);
+  const history = useHistory();
+
+  const getCategoryName = (id: string) => {
+    return categoriesList.length > 0
+      ? categoriesList.find((x: any) => x._id === id)?.item
+      : "";
+  };
 
   const columns: Column[] = [
     {
@@ -34,6 +45,9 @@ const ItemPostList: React.FC = () => {
       label: "Category",
       minWidth: 100,
       align: "center",
+      category: (id: string) => {
+        return <p>{getCategoryName(id)}</p>;
+      },
     },
     {
       id: "price",
@@ -48,7 +62,7 @@ const ItemPostList: React.FC = () => {
       align: "center",
     },
     {
-      id: "mobileNumber",
+      id: "mobile",
       label: "Mobile Number",
       minWidth: 150,
       align: "center",
@@ -61,7 +75,11 @@ const ItemPostList: React.FC = () => {
       action: (id: string) => {
         return (
           <>
-            <Button onClick={() => onEditRow(id)}>
+            <Button
+              onClick={() => {
+                history.push(`/post-view/${id}`);
+              }}
+            >
               <RateReviewIcon
                 color="primary"
                 style={{
@@ -75,26 +93,31 @@ const ItemPostList: React.FC = () => {
     },
   ];
 
-  const postRecord = [
-    {
-      id: 1,
-      title: "Iphone 11",
-      category: "Mobile",
-      price: "33122",
-      email: "chetanit2013@gmail.com",
-      mobileNumber: "9712122233",
-      action: "asd",
-    },
-    {
-      id: 2,
-      title: "Iphone 12",
-      category: "Mobile",
-      price: "43122",
-      email: "chetanit2013@gmail.com",
-      mobileNumber: "9812122233",
-      action: "asd",
-    },
-  ];
+  useEffect(() => {
+    GetCategories()
+      .then((res: any) => {
+        if (res.data.result.data) {
+          setCategoriesList(res.data.result.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    const test = GetPostList();
+    setPostList(test);
+    // GetPostList()
+    //   .then((res: any) => {
+    //     if (res.data.result.data) {
+    //       setItemPostList(res.data.result.data);
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
+  }, []);
 
   return (
     <>
@@ -117,17 +140,22 @@ const ItemPostList: React.FC = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {postRecord.map((row) => {
+              {postList.map((row: any) => {
                 return (
                   <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-                    {columns.map((column) => {
-                      const value = row[column.id];
-                      return (
-                        <TableCell key={column.id} align={column.align}>
-                          {column.action ? column.action(row.id, row) : value}
-                        </TableCell>
-                      );
-                    })}
+                    {categoriesList.length > 0 &&
+                      columns.map((column) => {
+                        const value = row[column.id];
+                        return (
+                          <TableCell key={column.id} align={column.align}>
+                            {column.action
+                              ? column.action(row._id)
+                              : column.category
+                              ? column.category(row.category)
+                              : value}
+                          </TableCell>
+                        );
+                      })}
                   </TableRow>
                 );
               })}
