@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Container, Grid } from "@mui/material";
-import "./Post.css";
+import "./PostDetail.css";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { Carousel } from "react-responsive-carousel";
-import Item from "../../models/Item";
+import PostDetailModel from "../../models/PostDetailModel";
 import { useParams } from "react-router-dom";
 import { GetPostDetail } from "../../api/PostController";
 
 interface PostProps {
-  item: Item;
+  item: PostDetailModel;
 }
 
 const Post: React.FC<PostProps> = ({ item }) => {
@@ -16,17 +15,15 @@ const Post: React.FC<PostProps> = ({ item }) => {
   const [postDetail, setPostDetail] = useState<any>(null);
 
   useEffect(() => {
-    const response = GetPostDetail(id);
-    setPostDetail(response);
-    // GetPostDetail(id)
-    //   .then((res: any) => {
-    //     if (res.data.result.data) {
-    //       setPostDetail(res.data.result.data);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
+    GetPostDetail(id)
+      .then((res: any) => {
+        if (res.data.result.data) {
+          setPostDetail(res.data.result.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, [id]);
 
   console.log(postDetail);
@@ -38,7 +35,7 @@ const Post: React.FC<PostProps> = ({ item }) => {
           <Grid container spacing={2}>
             <Grid item xs={8}>
               <div className="item-carousel">
-                <img src={postDetail.imageURL} />
+                <img src={postDetail.imageURL} alt="" />
               </div>
             </Grid>
             <Grid item xs={4} className="price-container">

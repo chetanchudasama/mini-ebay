@@ -12,10 +12,10 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import "./SellItem.css";
+import "./AddPost.css";
 import FileUpload from "../FileUpload/FileUpload";
 import FileModel from "../../models/FileModel";
-import Item from "../../models/Item";
+import PostDetailModel from "../../models/PostDetailModel";
 import {
   AddNewPost,
   GetCategories,
@@ -24,7 +24,9 @@ import {
 } from "../../api/PostController";
 
 const SellItem: React.FC = () => {
-  const [itemPost, setItemPost] = useState<Item>(new Item());
+  const [itemPost, setItemPost] = useState<PostDetailModel>(
+    new PostDetailModel()
+  );
   const [countriesList, setCountriesList] = useState<any>([]);
   const [categoriesList, setCategoriesList] = useState<any>([]);
   const [stateList, setStateList] = useState<any>([]);
@@ -210,7 +212,7 @@ const SellItem: React.FC = () => {
               >
                 {countriesList.length > 0 &&
                   countriesList.map((country: any) => (
-                    <MenuItem key={country._id} value={country.name}>
+                    <MenuItem key={country._id} value={country._id}>
                       {country.name}
                     </MenuItem>
                   ))}

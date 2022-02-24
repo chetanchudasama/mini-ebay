@@ -1,5 +1,4 @@
 import React from "react";
-import { useState } from "react";
 import { Button } from "@mui/material";
 import FileModel from "../../models/FileModel";
 import "./FileUpload.css";

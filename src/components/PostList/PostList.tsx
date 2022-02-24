@@ -10,7 +10,6 @@ import {
   TableRow,
 } from "@mui/material";
 import RateReviewIcon from "@mui/icons-material/RateReview";
-import Item from "../../models/Item";
 import { GetCategories, GetPostList } from "../../api/PostController";
 import { useHistory } from "react-router-dom";
 
@@ -106,17 +105,15 @@ const ItemPostList: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const test = GetPostList();
-    setPostList(test);
-    // GetPostList()
-    //   .then((res: any) => {
-    //     if (res.data.result.data) {
-    //       setItemPostList(res.data.result.data);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
+    GetPostList()
+      .then((res: any) => {
+        if (res.data.result.data) {
+          setPostList(res.data.result.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
 
   return (

@@ -1,6 +1,6 @@
 import FileModel from "./FileModel";
 
-export default class Item {
+export default class PostDetailModel {
   public title: string;
   public category: string;
   public mobileNumber: string;
