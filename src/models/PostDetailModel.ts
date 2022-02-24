@@ -1,5 +1,3 @@
-import FileModel from "./FileModel";
-
 export default class PostDetailModel {
   public title: string;
   public category: string;
@@ -7,12 +5,11 @@ export default class PostDetailModel {
   public name: string;
   public email: string;
   public description: string;
-  public file: any;
   public price: number;
-  public country: string;
-  public state: string;
-  public isVisiblePublicly: boolean;
-  public image: FileModel;
+  public country?: number;
+  public state?: number;
+  public isPublic: boolean;
+  public imageUrl: string;
 
   public constructor() {
     this.title = "";
@@ -22,9 +19,7 @@ export default class PostDetailModel {
     this.email = "";
     this.description = "";
     this.price = 0;
-    this.country = "";
-    this.state = "";
-    this.isVisiblePublicly = false;
-    this.image = new FileModel();
+    this.isPublic = true;
+    this.imageUrl = "";
   }
 }

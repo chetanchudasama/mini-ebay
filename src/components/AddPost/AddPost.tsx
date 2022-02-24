@@ -23,17 +23,20 @@ import {
   GetState,
 } from "../../api/PostController";
 import CustomSnackbar from "../CustomSnackbar/CustomSnackbar";
+import { ICategory, ILocation, IResponseObject } from "../../commons/interface";
+import { useHistory } from "react-router-dom";
 
 const SellItem: React.FC = () => {
   const [itemPost, setItemPost] = useState<PostDetailModel>(
     new PostDetailModel()
   );
-  const [countriesList, setCountriesList] = useState<any>([]);
-  const [categoriesList, setCategoriesList] = useState<any>([]);
-  const [stateList, setStateList] = useState<any>([]);
-
+  const history = useHistory();
+  const [countriesList, setCountriesList] = useState<ILocation[]>([]);
+  const [categoriesList, setCategoriesList] = useState<ICategory[]>([]);
+  const [stateList, setStateList] = useState<ILocation[]>([]);
   const [isShownSnackbar, setIsShownSnackbar] = useState<boolean>(false);
   const [responseMessage, setResponseMessage] = useState<string>("");
+  const [itemImage, setItemImage] = useState<FileModel>(new FileModel());
 
   const onChange = (e: any) => {
     const { value, id } = e.target;
@@ -46,72 +49,74 @@ const SellItem: React.FC = () => {
 
   useEffect(() => {
     GetCountries()
-      .then((res: any) => {
+      .then((res: IResponseObject) => {
         if (res.data.result.data) {
           setCountriesList(res.data.result.data);
         }
       })
       .catch((error) => {
-        console.log(error);
+        handleErrorMsg();
       });
     GetCategories()
-      .then((res: any) => {
+      .then((res: IResponseObject) => {
         if (res.data.result.data) {
           setCategoriesList(res.data.result.data);
         }
       })
       .catch((error) => {
-        console.log(error);
+        handleErrorMsg();
       });
   }, []);
 
   useEffect(() => {
-    GetState(itemPost.country)
-      .then((res: any) => {
-        if (res.data.result.data) {
-          setStateList(res.data.result.data);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (itemPost.country !== undefined) {
+      GetState(itemPost.country)
+        .then((res: IResponseObject) => {
+          if (res.data.result.data) {
+            setStateList(res.data.result.data);
+          }
+        })
+        .catch((error) => {
+          handleErrorMsg();
+        });
+    }
   }, [itemPost.country]);
 
-  const handlePostData = () => {
+  const handleSubmitPostData = () => {
     const formData = new FormData();
-    if (itemPost.image.file) {
-      formData.append("images", itemPost.image.file, itemPost.image.fileName);
+    if (itemImage.file) {
+      formData.append("imageUrl", itemImage.file, itemImage.fileName);
     }
 
     Object.entries(itemPost).forEach(([k, v]) => {
-      if (k !== "opposingTeamLogo") {
-        // skip fields with empty value
-        if (v !== "") {
-          formData.append(k, v);
-        }
+      // skip fields with empty value
+      if (v !== "") {
+        formData.append(k, v);
       }
     });
     AddNewPost(formData)
-      .then((res: any) => {
-        setIsShownSnackbar(true);
-        setResponseMessage("Post record created successfully ");
+      .then((res: IResponseObject) => {
+        if (res.data.result.data) {
+          setIsShownSnackbar(true);
+          setResponseMessage("Record Added successfully");
+          setTimeout(() => {
+            history.push("/");
+          }, 500);
+        }
       })
       .catch((error) => {
-        setIsShownSnackbar(true);
-        setResponseMessage("Something went to wrong");
+        handleErrorMsg();
       });
   };
 
-  const onFileChange = (file: FileModel) => {
-    setItemPost({
-      ...itemPost,
-      image: file,
-    });
+  const handleErrorMsg = () => {
+    setIsShownSnackbar(true);
+    setResponseMessage("Something went to wrong");
   };
 
   return (
     <>
-      <Container maxWidth="md" className="sell-item-container">
+      <Container maxWidth="md" className="item-container">
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <h3>INCLUDE SOME DETAILS</h3>
@@ -192,10 +197,7 @@ const SellItem: React.FC = () => {
           </Grid>
 
           <Grid item xs={8}>
-            <FileUpload
-              onFileChange={onFileChange}
-              imageFile={itemPost.image}
-            />
+            <FileUpload onFileChange={setItemImage} imageFile={itemImage} />
           </Grid>
         </Grid>
 
@@ -211,7 +213,7 @@ const SellItem: React.FC = () => {
               <InputLabel>Country List</InputLabel>
               <Select
                 label="Country List"
-                value={itemPost.country}
+                value={itemPost.country ?? ""}
                 onChange={(event: any) => {
                   handleSelectChange("country", event.target.value);
                 }}
@@ -230,8 +232,8 @@ const SellItem: React.FC = () => {
             <FormControl fullWidth>
               <InputLabel>State</InputLabel>
               <Select
-                label="Category"
-                value={itemPost.state}
+                label="State"
+                value={itemPost.state ?? ""}
                 onChange={(event: any) => {
                   handleSelectChange("state", event.target.value);
                 }}
@@ -296,11 +298,11 @@ const SellItem: React.FC = () => {
                 <Checkbox
                   id="isVisiblePublicly"
                   color="success"
-                  checked={itemPost.isVisiblePublicly}
+                  checked={itemPost.isPublic}
                   onChange={(event) =>
                     setItemPost({
                       ...itemPost,
-                      isVisiblePublicly: event.target.checked,
+                      isPublic: event.target.checked,
                     })
                   }
                 />
@@ -313,7 +315,11 @@ const SellItem: React.FC = () => {
         <Divider style={{ marginTop: "20px" }} />
 
         <Grid item xs={12} className="post-button">
-          <Button variant="contained" size="large" onClick={handlePostData}>
+          <Button
+            variant="contained"
+            size="large"
+            onClick={handleSubmitPostData}
+          >
             POST
           </Button>
         </Grid>
